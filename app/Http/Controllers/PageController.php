@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Models\Product_type;
 use Illuminate\Http\Request;
 use App\Models\Slide;
 
@@ -10,12 +11,20 @@ class PageController extends Controller
 {
     public function getIndex(){
         $slide = Slide::all();
-        $new_product = Product::where('new',1)->get();
-        return view('page.trangchu', compact('slide','new_product'));
+        // return view('page.trangchu');
+        // return view('page.trangchu',compact('slide'));
+        $new_product = Product::where('new',1)->paginate(8);
+        $sanpham_khuyenmai = Product::where('promotion_price','<>',0)->paginate(4);
+        //dd($new_product);
+        return view('page.trangchu',compact('slide','new_product','sanpham_khuyenmai'));
     }
 
-    public function getLoaiSp(){
-        return view('page.loai_sanpham');
+    public function getLoaiSp($type){
+        $type_name = Product_type::where('id',$type)->first();
+        $type_product = Product_type::all();
+        $sp_theoloai = Product::where('id_type',$type)->get();
+        $sp_khac = Product::where('id_type','<>',$type)->paginate(3);
+        return view('page.loai_sanpham', compact('sp_theoloai','type_product','sp_khac','type_name'));
     }
 
     public function getChitiet(){
