@@ -20,11 +20,15 @@ class PageController extends Controller
     }
 
     public function getLoaiSp($type){
-        $type_name = Product_type::where('id',$type)->first();
         $type_product = Product_type::all();
-        $sp_theoloai = Product::where('id_type',$type)->get();
-        $sp_khac = Product::where('id_type','<>',$type)->paginate(3);
-        return view('page.loai_sanpham', compact('sp_theoloai','type_product','sp_khac','type_name'));
+
+        $sp_theoloai = Product::where('id_type', $type)->get();
+
+        $sp_khac = Product::where('id_type', '<>', $type)->paginate(3);
+
+        $loai_sp = Product_type::where('id', $type)->first();
+
+        return view('page.loai_sanpham', compact('type_product', 'sp_theoloai', 'sp_khac', 'loai_sp'));
     }
 
     public function getChitiet(){
